@@ -75,7 +75,7 @@ function analyzeSalesData(data, options) {
         typeof calculateRevenue !== "function" ||
         typeof calculateBonus !== "function"
     ) {
-        throw new Error("Функции расчета бонусов и выручки должны быть переданы в options");
+        throw new Error("Функции неккоректны");
     }
 
     const productIndex = Object.fromEntries(data.products.map(p => [p.sku, p]));
