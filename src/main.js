@@ -52,11 +52,22 @@ function analyzeSalesData(data, options) {
     // @TODO: Подготовка итоговой коллекции с нужными полями
     if (
         !data ||
-        !Array.isArray(data.sellers) ||
+        !data.customers ||
+        !data.products ||
+        !data.purchase_records ||
+        !Array.isArray(data.customers) ||
         !Array.isArray(data.products) ||
         !Array.isArray(data.purchase_records)
     ) {
         throw new Error("Неккоректные входные данные")
+    }
+
+    if (
+        data.customers.length === 0 ||
+        data.products.length === 0 ||
+        data.purchase_records.length === 0
+    ) {
+        throw new Error("Некорректные входные данные: пустые массивы");
     }
 
     const { calculateRevenue, calculateBonus } = options || {};
@@ -79,7 +90,9 @@ function analyzeSalesData(data, options) {
         if (!sellerStats[sellerId]) {
             sellerStats[sellerId] = {
                 seller_id: sellerId,
-                name: sellerInfo ? sellerInfo.first_name : sellerId, // ⚙️ Только имя
+                name: sellerInfo ? 
+                    `${sellerInfo.first_name} ${sellerInfo.last_name}`
+                    : sellerId,
                 revenue: 0,
                 profit: 0,
                 sales_count: 0,
