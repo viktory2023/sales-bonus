@@ -1,4 +1,4 @@
-https://github.com/viktory2023/sales-bonus
+https://github.com/viktory2023/sales-bonus.git
 
 
 # Проектная работа "Пряники"
