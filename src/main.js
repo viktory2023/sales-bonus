@@ -59,7 +59,7 @@ function analyzeSalesData(data, options) {
         !Array.isArray(data.products) ||
         !Array.isArray(data.purchase_records)
     ) {
-        throw new Error("Неккоректные входные данные")
+        throw new Error("Неккоректные входные данные");
     }
 
     if (
@@ -79,19 +79,20 @@ function analyzeSalesData(data, options) {
     }
 
     const productIndex = Object.fromEntries(data.products.map(p => [p.sku, p]));
-    const sellerIndex = Object.fromEntries(data.sellers.map(s => [s.id, s]));
+    const sellerIndex = Object.fromEntries(data.customers.map(c => [c.id, c]));
 
     const sellerStats = {};
 
     data.purchase_records.forEach(record => {
         const sellerId = record.seller_id;
-        const sellerInfo = sellerIndex[sellerId];
+        const normalizedId = sellerId.replace("seller_", "customer_");
+        const sellerInfo = sellerIndex[normalizedId];
 
         if (!sellerStats[sellerId]) {
             sellerStats[sellerId] = {
                 seller_id: sellerId,
-                name: sellerInfo ? 
-                    `${sellerInfo.first_name} ${sellerInfo.last_name}`
+                name: sellerInfo
+                    ? `${sellerInfo.first_name} ${sellerInfo.last_name}`
                     : sellerId,
                 revenue: 0,
                 profit: 0,
