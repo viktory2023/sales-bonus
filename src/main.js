@@ -52,9 +52,9 @@ function analyzeSalesData(data, options) {
     // @TODO: Подготовка итоговой коллекции с нужными полями
     if (
         !data ||
+        !Array.isArray(data.sellers) ||
         !Array.isArray(data.products) ||
-        !Array.isArray(data.purchase_records) ||
-        !Array.isArray(data.customers)
+        !Array.isArray(data.purchase_records)
     ) {
         throw new Error("Неккоректные входные данные")
     }
@@ -67,32 +67,26 @@ function analyzeSalesData(data, options) {
         throw new Error("Функции расчета бонусов и выручки должны быть переданы в options");
     }
 
-    const productIndex = Object.fromEntries(
-        data.products.map(p => [p.sku, p])
-    );
-
-    const customerIndex = Object.fromEntries(
-        data.customers.map(c => [c.id, c])
-    );
+    const productIndex = Object.fromEntries(data.products.map(p => [p.sku, p]));
+    const sellerIndex = Object.fromEntries(data.sellers.map(s => [s.id, s]));
 
     const sellerStats = {};
 
     data.purchase_records.forEach(record => {
         const sellerId = record.seller_id;
-        const customerId = sellerId.replace("seller_", "customer_");
-        const customer = customerIndex[customerId];
+        const sellerInfo = sellerIndex[sellerId];
+
         if (!sellerStats[sellerId]) {
             sellerStats[sellerId] = {
                 seller_id: sellerId,
-                name: customer ?
-                    `${customer.first_name}`
-                    : sellerId,
+                name: sellerInfo ? sellerInfo.first_name : sellerId, // ⚙️ Только имя
                 revenue: 0,
                 profit: 0,
                 sales_count: 0,
                 products_sold: {}
             };
         }
+
         const seller = sellerStats[sellerId];
         seller.sales_count += 1;
         seller.revenue += record.total_amount;
@@ -101,10 +95,9 @@ function analyzeSalesData(data, options) {
             const product = productIndex[item.sku];
             if (!product) return;
 
-            const cost = product.purchase_price * item.quantity;
             const revenue = calculateRevenue(item, product);
+            const cost = product.purchase_price * item.quantity;
             const profit = revenue - cost;
-
             seller.profit += profit;
 
             if (!seller.products_sold[item.sku]) {
@@ -118,7 +111,6 @@ function analyzeSalesData(data, options) {
 
     sellersArray.forEach((seller, index) => {
         seller.bonus = calculateBonus(index, sellersArray.length, seller);
-
         seller.top_products = Object.entries(seller.products_sold)
             .map(([sku, quantity]) => ({ sku, quantity }))
             .sort((a, b) => b.quantity - a.quantity)
