@@ -79,15 +79,15 @@ function analyzeSalesData(data, options) {
     }
 
     const productIndex = Object.fromEntries(data.products.map(p => [p.sku, p]));
-    const sellerIndex = Object.fromEntries(data.customers.map(c => [c.id, c]));
+    const sellerIndex = Object.fromEntries(data.seller.map(c => [c.id, c]));
 
     const sellerStats = {};
 
     data.purchase_records.forEach(record => {
         const sellerId = record.seller_id;
-        const normalizedId = sellerId.replace("seller_", "customer_");
-        const sellerInfo = sellerIndex[normalizedId];
-
+        // const normalizedId = sellerId.replace("seller_", "customer_");
+        // const sellerInfo = sellerIndex[normalizedId];
+        const sellerInfo = sellerIndex[sellerId];
         if (!sellerStats[sellerId]) {
             sellerStats[sellerId] = {
                 seller_id: sellerId,
