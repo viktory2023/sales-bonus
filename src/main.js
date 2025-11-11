@@ -55,9 +55,11 @@ function analyzeSalesData(data, options) {
         !data.customers ||
         !data.products ||
         !data.purchase_records ||
+        !data.sellers ||
         !Array.isArray(data.customers) ||
         !Array.isArray(data.products) ||
-        !Array.isArray(data.purchase_records)
+        !Array.isArray(data.purchase_records) ||
+        !Array.isArray(data.sellers)
     ) {
         throw new Error("Неккоректные входные данные");
     }
@@ -65,7 +67,8 @@ function analyzeSalesData(data, options) {
     if (
         data.customers.length === 0 ||
         data.products.length === 0 ||
-        data.purchase_records.length === 0
+        data.purchase_records.length === 0 ||
+        data.sellers === 0
     ) {
         throw new Error("Некорректные входные данные: пустые массивы");
     }
