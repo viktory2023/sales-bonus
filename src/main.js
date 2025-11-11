@@ -79,7 +79,7 @@ function analyzeSalesData(data, options) {
     }
 
     const productIndex = Object.fromEntries(data.products.map(p => [p.sku, p]));
-    const sellerIndex = Object.fromEntries(data.seller.map(c => [c.id, c]));
+    const sellerIndex = Object.fromEntries(data.sellers.map(c => [c.id, c]));
 
     const sellerStats = {};
 
