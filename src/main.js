@@ -68,7 +68,7 @@ function analyzeSalesData(data, options) {
         data.customers.length === 0 ||
         data.products.length === 0 ||
         data.purchase_records.length === 0 ||
-        data.sellers === 0
+        data.sellers.length === 0
     ) {
         throw new Error("Некорректные входные данные: пустые массивы");
     }
